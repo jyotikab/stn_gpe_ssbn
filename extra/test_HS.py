@@ -1,7 +1,6 @@
 import numpy as np
 import itertools
 import sys
-#import common.ff_analyze_data as adata
 import sys
 import pdb
 import pylab as pl
@@ -11,10 +10,8 @@ import pickle
 
 
 # Had to change function spectral entropy to accept FFT spectrum instead of spike trains
-#def spec_entropy(act,total_time,bin_w = 5.,time_range=[],freq_range = []):
 def spec_entropy(power,freq,time_range=[],freq_range = []):
 	'''Function to calculate the spectral entropy'''
-	#power,freq,dummy,dummy,dummy = psd(bin_w = bin_w,time_range = time_range,act=act,total_time=total_time)
 	if freq_range != []:
 	  power = power[(freq>freq_range[0]) & (freq < freq_range[1])]
 	  freq = freq[(freq>freq_range[0]) & (freq < freq_range[1])]
@@ -54,7 +51,6 @@ for i,x in enumerate(norm_noise_sig):
     t21.plot(fft_freq[:int(len(fft_freq)/2)]*100,fft_norm,'.-',color=cmap1(i),label="se ="+str(np.round(se,2)),alpha=0.5)
 
 t11.set_xlim(0,300)
-#t11.set_xlabel("Time (ms)",fontsize=15,fontweight='bold')
 t11.set_ylabel("Amplitude (au)",fontsize=15,fontweight='bold')
 t21.set_xlim(0,40)
 t21.set_xlabel("Frequency (Hz)",fontsize=15,fontweight='bold')
