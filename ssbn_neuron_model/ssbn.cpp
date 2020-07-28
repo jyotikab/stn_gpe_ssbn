@@ -1,5 +1,5 @@
 /*
- *  psdb.cpp
+ *  ssbn.cpp
  *
  *  This file is part of NEST.
  *
@@ -21,7 +21,7 @@
  */
 
 
-#include "psdb.h"
+#include "ssbn.h"
 
 #ifdef HAVE_GSL
 
@@ -53,8 +53,8 @@
  * Recordables map
  * ---------------------------------------------------------------- */
 
-nest::RecordablesMap< nest::psdb >
-  nest::psdb::recordablesMap_;
+nest::RecordablesMap< nest::ssbn >
+  nest::ssbn::recordablesMap_;
 
 namespace nest // template specialization must be placed in namespace
 {
@@ -64,17 +64,17 @@ namespace nest // template specialization must be placed in namespace
  */
 template <>
 void
-RecordablesMap< psdb >::create()
+RecordablesMap< ssbn >::create()
 {
   // use standard names whereever you can for consistency!
   insert_(
-    names::V_m, &psdb::get_y_elem_< psdb::State_::V_M > );
+    names::V_m, &ssbn::get_y_elem_< psdb::State_::V_M > );
   insert_( names::g_ex,
-    &psdb::get_y_elem_< psdb::State_::G_EXC > );
+    &ssbn::get_y_elem_< psdb::State_::G_EXC > );
   insert_( names::g_in,
-    &psdb::get_y_elem_< psdb::State_::G_INH > );
+    &ssbn::get_y_elem_< psdb::State_::G_INH > );
 
-  insert_( names::t_ref_remaining, &psdb::get_r_ );
+  insert_( names::t_ref_remaining, &ssbn::get_r_ );
 }
 }
 
@@ -83,18 +83,18 @@ RecordablesMap< psdb >::create()
  * ---------------------------------------------------------------- */
 
 extern "C" inline int
-nest::psdb_dynamics( double,
+nest::ssbn_dynamics( double,
   const double y[],
   double f[],
   void* pnode )
 {
   // a shorthand
-  typedef nest::psdb::State_ S;
+  typedef nest::ssbn::State_ S;
 
   // get access to node so we can almost work as in a member function
   assert( pnode );
-  const nest::psdb& node =
-    *( reinterpret_cast< nest::psdb* >( pnode ) );
+  const nest::ssbn& node =
+    *( reinterpret_cast< nest::ssbn* >( pnode ) );
 
   // y[] here is---and must be---the state vector supplied by the integrator,
   // not the state vector in the node, node.S_.y[].
@@ -124,7 +124,7 @@ nest::psdb_dynamics( double,
  * Default constructors defining default parameters and state
  * ---------------------------------------------------------------- */
 
-nest::psdb::Parameters_::Parameters_()
+nest::ssbn::Parameters_::Parameters_()
   : V_th( -55.0 )    // mV
   , V_reset( -60.0 ) // mV
   , t_ref( 2.0 )     // ms
@@ -140,7 +140,7 @@ nest::psdb::Parameters_::Parameters_()
 {
 }
 
-nest::psdb::State_::State_( const Parameters_& p )
+nest::ssbn::State_::State_( const Parameters_& p )
   : r( 0 )
   , bm(0)
 {
@@ -149,7 +149,7 @@ nest::psdb::State_::State_( const Parameters_& p )
     y[ i ] = 0;
 }
 
-nest::psdb::State_::State_( const State_& s )
+nest::ssbn::State_::State_( const State_& s )
   : r( s.r ),
   bm(s.bm)
 {
@@ -157,7 +157,7 @@ nest::psdb::State_::State_( const State_& s )
     y[ i ] = s.y[ i ];
 }
 
-nest::psdb::State_& nest::psdb::State_::operator=(
+nest::ssbn::State_& nest::psdb::State_::operator=(
   const State_& s )
 {
   if ( this == &s ) // avoid assignment to self
@@ -171,7 +171,7 @@ nest::psdb::State_& nest::psdb::State_::operator=(
   return *this;
 }
 
-nest::psdb::Buffers_::Buffers_( psdb& n )
+nest::ssbn::Buffers_::Buffers_( psdb& n )
   : logger_( n )
   , s_( 0 )
   , c_( 0 )
@@ -181,7 +181,7 @@ nest::psdb::Buffers_::Buffers_( psdb& n )
   // init_buffers_().
 }
 
-nest::psdb::Buffers_::Buffers_( const Buffers_&, psdb& n )
+nest::ssbn::Buffers_::Buffers_( const Buffers_&, psdb& n )
   : logger_( n )
   , s_( 0 )
   , c_( 0 )
@@ -196,7 +196,7 @@ nest::psdb::Buffers_::Buffers_( const Buffers_&, psdb& n )
  * ---------------------------------------------------------------- */
 
 void
-nest::psdb::Parameters_::get( DictionaryDatum& d ) const
+nest::ssbn::Parameters_::get( DictionaryDatum& d ) const
 {
   def< double >( d, names::V_th, V_th );
   def< double >( d, names::V_reset, V_reset );
@@ -213,7 +213,7 @@ nest::psdb::Parameters_::get( DictionaryDatum& d ) const
 }
 
 void
-nest::psdb::Parameters_::set( const DictionaryDatum& d )
+nest::ssbn::Parameters_::set( const DictionaryDatum& d )
 {
   // allow setting the membrane potential
   updateValue< double >( d, names::V_th, V_th );
@@ -247,13 +247,13 @@ nest::psdb::Parameters_::set( const DictionaryDatum& d )
 }
 
 void
-nest::psdb::State_::get( DictionaryDatum& d ) const
+nest::ssbn::State_::get( DictionaryDatum& d ) const
 {
   def< double >( d, names::V_m, y[ V_M ] ); // Membrane potential
 }
 
 void
-nest::psdb::State_::set( const DictionaryDatum& d,
+nest::ssbn::State_::set( const DictionaryDatum& d,
   const Parameters_& )
 {
   updateValue< double >( d, names::V_m, y[ V_M ] );
@@ -264,7 +264,7 @@ nest::psdb::State_::set( const DictionaryDatum& d,
  * Default and copy constructor for node, and destructor
  * ---------------------------------------------------------------- */
 
-nest::psdb::psdb()
+nest::ssbn::psdb()
   : Archiving_Node()
   , P_()
   , S_( P_ )
@@ -273,7 +273,7 @@ nest::psdb::psdb()
   recordablesMap_.create();
 }
 
-nest::psdb::psdb( const psdb& n )
+nest::ssbn::psdb( const psdb& n )
   : Archiving_Node( n )
   , P_( n.P_ )
   , S_( n.S_ )
@@ -281,7 +281,7 @@ nest::psdb::psdb( const psdb& n )
 {
 }
 
-nest::psdb::~psdb()
+nest::ssbn::~psdb()
 {
   // GSL structs may not have been allocated, so we need to protect destruction
   if ( B_.s_ )
@@ -297,9 +297,9 @@ nest::psdb::~psdb()
  * ---------------------------------------------------------------- */
 
 void
-nest::psdb::init_state_( const Node& proto )
+nest::ssbn::init_state_( const Node& proto )
 {
-  const psdb& pr = downcast< psdb >( proto );
+  const ssbn& pr = downcast< psdb >( proto );
   S_ = pr.S_;
   FILE *fd = fopen("/dev/urandom", "r");
 
@@ -313,7 +313,7 @@ nest::psdb::init_state_( const Node& proto )
 }
 
 void
-nest::psdb::init_buffers_()
+nest::ssbn::init_buffers_()
 {
   Archiving_Node::clear_history();
 
@@ -342,7 +342,7 @@ nest::psdb::init_buffers_()
   else
     gsl_odeiv_evolve_reset( B_.e_ );
 
-  B_.sys_.function = psdb_dynamics;
+  B_.sys_.function = ssbn_dynamics;
   B_.sys_.jacobian = NULL;
   B_.sys_.dimension = State_::STATE_VEC_SIZE;
   B_.sys_.params = reinterpret_cast< void* >( this );
@@ -351,7 +351,7 @@ nest::psdb::init_buffers_()
 }
 
 void
-nest::psdb::calibrate()
+nest::ssbn::calibrate()
 {
   // ensures initialization in case mm connected after Simulate
   B_.logger_.init();
@@ -369,7 +369,7 @@ nest::psdb::calibrate()
  * ---------------------------------------------------------------- */
 
 void
-nest::psdb::update( Time const& origin,
+nest::ssbn::update( Time const& origin,
   const long from,
   const long to )
 {
@@ -499,7 +499,7 @@ nest::psdb::update( Time const& origin,
 }
 
 void
-nest::psdb::handle( SpikeEvent& e )
+nest::ssbn::handle( SpikeEvent& e )
 {
   assert( e.get_delay() > 0 );
 
@@ -515,7 +515,7 @@ nest::psdb::handle( SpikeEvent& e )
 }
 
 void
-nest::psdb::handle( CurrentEvent& e )
+nest::ssbn::handle( CurrentEvent& e )
 {
   assert( e.get_delay() > 0 );
 
@@ -526,7 +526,7 @@ nest::psdb::handle( CurrentEvent& e )
 }
 
 void
-nest::psdb::handle( DataLoggingRequest& e )
+nest::ssbn::handle( DataLoggingRequest& e )
 {
   B_.logger_.handle( e );
 }

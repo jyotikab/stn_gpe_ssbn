@@ -1,5 +1,5 @@
 /*
- *  psdb.h
+ *  ssbn.h
  *
  *  This file is part of NEST.
  *
@@ -43,11 +43,11 @@
 #include "universal_data_logger.h"
 
 /* BeginDocumentation
-Name: psdb - Simple conductance based leaky integrate-and-fire neuron
+Name: ssbn - Simple conductance based leaky integrate-and-fire neuron
                        model.
 
 Description:
-psdb is an implementation of a spiking neuron using IAF dynamics with
+ssbn is an implementation of a spiking neuron using IAF dynamics with
 conductance-based synapses. Incoming spike events induce a post-synaptic change
 of conductance modelled by an alpha function. The alpha function
 is normalised such that an event of weight 1.0 results in a peak current of 1 nS
@@ -89,7 +89,7 @@ the Fluctuation- Driven Regime. Jneurosci 24(10) 2345-2356
 
 Author: Schrader, Plesser
 
-SeeAlso: iaf_cond_exp, psdb_mc
+SeeAlso: iaf_cond_exp, ssbn_mc
 */
 
 namespace nest
@@ -104,7 +104,7 @@ namespace nest
  *       through a function pointer.
  * @param void* Pointer to model neuron instance.
  */
-extern "C" int psdb_dynamics( double, const double*, double*, void* );
+extern "C" int ssbn_dynamics( double, const double*, double*, void* );
 
 /**
  * Integrate-and-fire neuron model with two conductance-based synapses.
@@ -114,17 +114,17 @@ extern "C" int psdb_dynamics( double, const double*, double*, void* );
  *       when designing your own models with nonlinear dynamics.
  *       One weakness of this class is that it distinguishes between
  *       inputs to the two synapses by the sign of the synaptic weight.
- *       It would be better to use receptor_types, cf psdb_mc.
+ *       It would be better to use receptor_types, cf ssbn_mc.
  */
-class psdb : public Archiving_Node
+class ssbn : public Archiving_Node
 {
 
   // Boilerplate function declarations --------------------------------
 
 public:
-  psdb();
-  psdb( const psdb& );
-  ~psdb();
+  ssbn();
+  ssbn( const ssbn& );
+  ~ssbn();
 
   /*
    * Import all overloaded virtual functions that we
@@ -159,11 +159,11 @@ private:
   // Friends --------------------------------------------------------
 
   // make dynamics function quasi-member
-  friend int psdb_dynamics( double, const double*, double*, void* );
+  friend int ssbn_dynamics( double, const double*, double*, void* );
 
   // The next two classes need to be friends to access the State_ class/member
-  friend class RecordablesMap< psdb >;
-  friend class UniversalDataLogger< psdb >;
+  friend class RecordablesMap< ssbn >;
+  friend class UniversalDataLogger< ssbn >;
 
 private:
   // Parameters class -------------------------------------------------
@@ -248,11 +248,11 @@ private:
    */
   struct Buffers_
   {
-    Buffers_( psdb& );                  //!<Sets buffer pointers to 0
-    Buffers_( const Buffers_&, psdb& ); //!<Sets buffer pointers to 0
+    Buffers_( ssbn& );                  //!<Sets buffer pointers to 0
+    Buffers_( const Buffers_&, ssbn& ); //!<Sets buffer pointers to 0
 
     //! Logger for all analog data
-    UniversalDataLogger< psdb > logger_;
+    UniversalDataLogger< ssbn > logger_;
 
     /** buffers and sums up incoming spikes/currents */
     RingBuffer spike_exc_;
@@ -332,14 +332,14 @@ private:
   Buffers_ B_;
 
   //! Mapping of recordables names to access functions
-  static RecordablesMap< psdb > recordablesMap_;
+  static RecordablesMap< ssbn > recordablesMap_;
 };
 
 
 // Boilerplate inline function definitions ----------------------------------
 
 inline port
-psdb::send_test_event( Node& target,
+ssbn::send_test_event( Node& target,
   rport receptor_type,
   synindex,
   bool )
@@ -350,7 +350,7 @@ psdb::send_test_event( Node& target,
 }
 
 inline port
-psdb::handles_test_event( SpikeEvent&, rport receptor_type )
+ssbn::handles_test_event( SpikeEvent&, rport receptor_type )
 {
   if ( receptor_type != 0 )
     throw UnknownReceptorType( receptor_type, get_name() );
@@ -358,7 +358,7 @@ psdb::handles_test_event( SpikeEvent&, rport receptor_type )
 }
 
 inline port
-psdb::handles_test_event( CurrentEvent&, rport receptor_type )
+ssbn::handles_test_event( CurrentEvent&, rport receptor_type )
 {
   if ( receptor_type != 0 )
     throw UnknownReceptorType( receptor_type, get_name() );
@@ -366,7 +366,7 @@ psdb::handles_test_event( CurrentEvent&, rport receptor_type )
 }
 
 inline port
-psdb::handles_test_event( DataLoggingRequest& dlr,
+ssbn::handles_test_event( DataLoggingRequest& dlr,
   rport receptor_type )
 {
   if ( receptor_type != 0 )
@@ -375,7 +375,7 @@ psdb::handles_test_event( DataLoggingRequest& dlr,
 }
 
 inline void
-psdb::get_status( DictionaryDatum& d ) const
+ssbn::get_status( DictionaryDatum& d ) const
 {
   P_.get( d );
   S_.get( d );
@@ -385,7 +385,7 @@ psdb::get_status( DictionaryDatum& d ) const
 }
 
 inline void
-psdb::set_status( const DictionaryDatum& d )
+ssbn::set_status( const DictionaryDatum& d )
 {
   Parameters_ ptmp = P_; // temporary copy in case of errors
   ptmp.set( d );         // throws if BadProperty
