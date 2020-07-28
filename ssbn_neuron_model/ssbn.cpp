@@ -68,11 +68,11 @@ RecordablesMap< ssbn >::create()
 {
   // use standard names whereever you can for consistency!
   insert_(
-    names::V_m, &ssbn::get_y_elem_< psdb::State_::V_M > );
+    names::V_m, &ssbn::get_y_elem_< ssbn::State_::V_M > );
   insert_( names::g_ex,
-    &ssbn::get_y_elem_< psdb::State_::G_EXC > );
+    &ssbn::get_y_elem_< ssbn::State_::G_EXC > );
   insert_( names::g_in,
-    &ssbn::get_y_elem_< psdb::State_::G_INH > );
+    &ssbn::get_y_elem_< ssbn::State_::G_INH > );
 
   insert_( names::t_ref_remaining, &ssbn::get_r_ );
 }
@@ -157,7 +157,7 @@ nest::ssbn::State_::State_( const State_& s )
     y[ i ] = s.y[ i ];
 }
 
-nest::ssbn::State_& nest::psdb::State_::operator=(
+nest::ssbn::State_& nest::ssbn::State_::operator=(
   const State_& s )
 {
   if ( this == &s ) // avoid assignment to self
@@ -171,7 +171,7 @@ nest::ssbn::State_& nest::psdb::State_::operator=(
   return *this;
 }
 
-nest::ssbn::Buffers_::Buffers_( psdb& n )
+nest::ssbn::Buffers_::Buffers_( ssbn& n )
   : logger_( n )
   , s_( 0 )
   , c_( 0 )
@@ -181,7 +181,7 @@ nest::ssbn::Buffers_::Buffers_( psdb& n )
   // init_buffers_().
 }
 
-nest::ssbn::Buffers_::Buffers_( const Buffers_&, psdb& n )
+nest::ssbn::Buffers_::Buffers_( const Buffers_&, ssbn& n )
   : logger_( n )
   , s_( 0 )
   , c_( 0 )
@@ -264,7 +264,7 @@ nest::ssbn::State_::set( const DictionaryDatum& d,
  * Default and copy constructor for node, and destructor
  * ---------------------------------------------------------------- */
 
-nest::ssbn::psdb()
+nest::ssbn::ssbn()
   : Archiving_Node()
   , P_()
   , S_( P_ )
@@ -273,7 +273,7 @@ nest::ssbn::psdb()
   recordablesMap_.create();
 }
 
-nest::ssbn::psdb( const psdb& n )
+nest::ssbn::ssbn( const ssbn& n )
   : Archiving_Node( n )
   , P_( n.P_ )
   , S_( n.S_ )
@@ -281,7 +281,7 @@ nest::ssbn::psdb( const psdb& n )
 {
 }
 
-nest::ssbn::~psdb()
+nest::ssbn::~ssbn()
 {
   // GSL structs may not have been allocated, so we need to protect destruction
   if ( B_.s_ )
@@ -299,7 +299,7 @@ nest::ssbn::~psdb()
 void
 nest::ssbn::init_state_( const Node& proto )
 {
-  const ssbn& pr = downcast< psdb >( proto );
+  const ssbn& pr = downcast< ssbn >( proto );
   S_ = pr.S_;
   FILE *fd = fopen("/dev/urandom", "r");
 
