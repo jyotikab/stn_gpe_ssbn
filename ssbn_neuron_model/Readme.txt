@@ -1,5 +1,7 @@
 
 
+* Copy ssbn.h and ssbn.cpp in directory models/
+
 * Register the new module in models/modelsmodule.cpp
 	# include "ssbn.h"	
 
